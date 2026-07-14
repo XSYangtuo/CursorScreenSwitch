@@ -157,6 +157,31 @@ switch -Wildcard ($Command.ToLower()) {
         }
     }
 
+    'layout' {
+        try {
+            Add-Type -AssemblyName System.Windows.Forms
+        } catch {
+            Write-Fail "无法加载显示器信息"
+            exit 1
+        }
+        $screens = [System.Windows.Forms.Screen]::AllScreens
+        Write-Host ""
+        Write-Host "  $ScriptName — 显示器布局" -ForegroundColor Cyan
+        Write-Host "  =============================================" -ForegroundColor DarkGray
+        $i = 1
+        foreach ($s in $screens) {
+            $b = $s.Bounds
+            $origin = if ($s.Primary) { "  ← 主屏 (0,0)" } else { "" }
+            $res = "{0}×{1}" -f $b.Width, $b.Height
+            Write-Host "    #$i  [$($b.X), $($b.Y) ~ $($b.Right), $($b.Bottom)]  $res$origin" -ForegroundColor White
+            $i++
+        }
+        Write-Host ""
+        Write-Status "在 layout.ini 的 order= 中按 # 编号指定跳转顺序" -Color DarkGray
+        Write-Status "  cursor_sw config  打开配置文件" -Color DarkGray
+        Write-Host ""
+    }
+
     { $_ -in 'status', 'help', '--help', '-h', '-?' } {
         if ($Command -in 'help', '--help', '-h', '-?') {
             Write-Host "╭─ $ScriptName CLI ──────────────────────────────╮" -ForegroundColor Cyan
@@ -181,6 +206,9 @@ switch -Wildcard ($Command.ToLower()) {
             Write-Host "│" -ForegroundColor Cyan -NoNewline
             Write-Host "  config/edit   编辑配置                         " -NoNewline
             Write-Host "│" -ForegroundColor Cyan
+            Write-Host "│" -ForegroundColor Cyan -NoNewline
+            Write-Host "  layout        查看显示器布局与编号             " -NoNewline
+            Write-Host "│" -ForegroundColor Cyan
             Write-Host "╰──────────────────────────────────────────────╯" -ForegroundColor Cyan
             exit 0
         }
@@ -200,6 +228,7 @@ switch -Wildcard ($Command.ToLower()) {
             Write-Status "cursor_sw off     关闭" -Color DarkGray
             Write-Status "cursor_sw toggle  切换" -Color DarkGray
             Write-Status "cursor_sw config  编辑配置" -Color DarkGray
+            Write-Status "cursor_sw layout 显示器布局" -Color DarkGray
         } else {
             Write-Host ""
             Write-Host "  [OFF]  $ScriptName  未运行" -ForegroundColor Yellow
@@ -212,7 +241,7 @@ switch -Wildcard ($Command.ToLower()) {
 
     default {
         Write-Fail "未知命令: $Command"
-        Write-Status "可用命令: on, off, toggle, status, restart, config" -Color DarkGray
+        Write-Status "可用命令: on, off, toggle, status, restart, config, layout" -Color DarkGray
         exit 1
     }
 }
