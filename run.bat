@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-title Screen Switch Launcher
+title CursorScreenSwitch Launcher
 
 :: 查找 AHK v2 安装路径
 set "AHK_PATH=%ProgramFiles%\AutoHotkey\v2\AutoHotkey64.exe"
@@ -20,5 +20,5 @@ if not exist "%AHK_PATH%" (
 )
 
 :: 启动脚本
-start "" "%AHK_PATH%" "%~dp0screen_switch.ahk"
+start "" "%AHK_PATH%" "%~dp0cursor_sw.ahk"
 exit /b 0

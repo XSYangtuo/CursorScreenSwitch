@@ -1,4 +1,4 @@
-# Screen Switch 🖥️→🖥️
+# CursorScreenSwitch 🖥️→🖥️
 
 双屏光标快速跳转工具。按一个快捷键，光标瞬间从当前屏幕中心跳到另一屏幕中心。
 
@@ -21,7 +21,7 @@ git clone https://github.com/你的用户名/CursorScreenControl.git
 cd CursorScreenControl
 
 # 启动（CLI 方式，推荐）
-.\screen-switch.cmd on
+.\cursor_sw.cmd on
 
 # 或双击 run.bat（自动查找 AHK 路径）
 ```
@@ -31,8 +31,10 @@ cd CursorScreenControl
 ## CLI 命令
 
 ```bash
-screen-switch <command>
+cursor_sw <command>
 ```
+
+`.cmd` 和 `.ps1` 等效，`.cmd` 不需要处理 PowerShell 执行策略，推荐日常使用。
 
 | 命令 | 说明 |
 |------|------|
@@ -44,7 +46,17 @@ screen-switch <command>
 | `config` / `edit` | 用记事本打开配置文件 |
 | `help` | 查看帮助 |
 
-`.cmd` 和 `.ps1` 是等效的入口。`.cmd` 不需要处理 PowerShell 执行策略，推荐日常使用。
+## 调试
+
+按快捷键后，屏幕左上角会显示 1.5 秒的调试信息：
+
+```
+CursorScreenSwitch
+→ 副屏 ( 2880, 540 )
+   边界 [1920, 0 ~ 3840, 1080]
+```
+
+如果跳转位置不准，可以看这里的坐标和边界数值，发给我排查。
 
 ## 配置
 
@@ -76,27 +88,23 @@ show_tray_icon=1
 | Alt + Space | `switch_screen=!Space` |
 | Ctrl + Alt + → | `switch_screen=^!Right` |
 
-修改后执行 `screen-switch.cmd restart` 即可生效。
+修改后执行 `cursor_sw.cmd restart` 即可生效。
 
 ## 开机自启
 
-### 方法：放入启动文件夹
-
-1. 右键 `screen-switch.cmd` → 创建快捷方式
+1. 右键 `cursor_sw.cmd` → 创建快捷方式
 2. `Win + R` → 输入 `shell:startup` → 回车
 3. 将快捷方式移入该文件夹
-
-启动后自动最小化运行在系统托盘，按快捷键即可工作。
 
 ## 项目结构
 
 ```
 CursorScreenControl/
-├── screen-switch.cmd      # CLI 入口（cmd 包装器，推荐）
-├── screen-switch.ps1      # CLI 入口（PowerShell 实现）
-├── screen_switch.ahk      # 核心 AHK 脚本（快捷键监听）
-├── config.ini             # 用户配置（快捷键/行为）
-├── run.bat                # 传统启动器（双击启动）
+├── cursor_sw.cmd      # CLI 入口（cmd 包装器，推荐）
+├── cursor_sw.ps1      # CLI 入口（PowerShell 实现）
+├── cursor_sw.ahk      # 核心 AHK 脚本（快捷键监听）
+├── config.ini         # 用户配置（快捷键/行为）
+├── run.bat            # 传统双击启动
 ├── README.md
 └── .gitignore
 ```

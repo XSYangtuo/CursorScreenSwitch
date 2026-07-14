@@ -1,6 +1,6 @@
 ﻿<#
 .SYNOPSIS
-  Screen Switch — 双屏光标快速跳转 CLI
+  CursorScreenSwitch — 双屏光标快速跳转 CLI
 
 .DESCRIPTION
   管理 AHK 后台脚本，控制光标在双屏间跳转。
@@ -14,9 +14,9 @@
     config / edit  编辑配置文件（记事本打开）
 
 .EXAMPLE
-  .\screen-switch.ps1 on
-  .\screen-switch.ps1 status
-  .\screen-switch.ps1 toggle
+  .\cursor_sw.ps1 on
+  .\cursor_sw.ps1 status
+  .\cursor_sw.ps1 toggle
 #>
 
 param(
@@ -24,8 +24,8 @@ param(
     [string]$Command = 'status'
 )
 
-$ScriptName   = "Screen Switch"
-$AhkScript    = Join-Path $PSScriptRoot "screen_switch.ahk"
+$ScriptName   = "CursorScreenSwitch"
+$AhkScript    = Join-Path $PSScriptRoot "cursor_sw.ahk"
 $ConfigFile   = Join-Path $PSScriptRoot "config.ini"
 $AhkPaths     = @(
     "$env:ProgramFiles\AutoHotkey\v2\AutoHotkey64.exe",
@@ -61,7 +61,7 @@ function Read-HotkeyFromConfig {
     $ini = Get-Content $ConfigFile -Raw -Encoding UTF8
     if ($ini -match '(?m)^switch_screen=(.+)') {
         $hotkey = $matches[1].Trim()
-        # 翻译修饰符为人类可读
+        # 翻译修饰符为人类可读（+ 优先替换，避免后续替换误伤）
         $hotkey = $hotkey -replace '\+', 'Shift+'
         $hotkey = $hotkey -replace '\^', 'Ctrl+'
         $hotkey = $hotkey -replace '!', 'Alt+'
@@ -164,22 +164,22 @@ switch -Wildcard ($Command.ToLower()) {
             Write-Host "  命令:                                      " -NoNewline
             Write-Host "│" -ForegroundColor Cyan
             Write-Host "│" -ForegroundColor Cyan -NoNewline
-            Write-Host "  on │ start     启动光标切换                    " -NoNewline
+            Write-Host "  on / start    启动光标切换                     " -NoNewline
             Write-Host "│" -ForegroundColor Cyan
             Write-Host "│" -ForegroundColor Cyan -NoNewline
-            Write-Host "  off │ stop     关闭光标切换                    " -NoNewline
+            Write-Host "  off / stop    关闭光标切换                     " -NoNewline
             Write-Host "│" -ForegroundColor Cyan
             Write-Host "│" -ForegroundColor Cyan -NoNewline
-            Write-Host "  toggle        切换开关                        " -NoNewline
+            Write-Host "  toggle        切换开关                         " -NoNewline
             Write-Host "│" -ForegroundColor Cyan
             Write-Host "│" -ForegroundColor Cyan -NoNewline
-            Write-Host "  status        查看运行状态                    " -NoNewline
+            Write-Host "  status        查看运行状态                     " -NoNewline
             Write-Host "│" -ForegroundColor Cyan
             Write-Host "│" -ForegroundColor Cyan -NoNewline
-            Write-Host "  restart/reload 重载配置后重启                 " -NoNewline
+            Write-Host "  restart/reload 重载配置后重启                  " -NoNewline
             Write-Host "│" -ForegroundColor Cyan
             Write-Host "│" -ForegroundColor Cyan -NoNewline
-            Write-Host "  config/edit   编辑配置                        " -NoNewline
+            Write-Host "  config/edit   编辑配置                         " -NoNewline
             Write-Host "│" -ForegroundColor Cyan
             Write-Host "╰──────────────────────────────────────────────╯" -ForegroundColor Cyan
             exit 0
@@ -193,19 +193,19 @@ switch -Wildcard ($Command.ToLower()) {
             $uptimeStr = "{0}小时{1}分" -f $uptime.Hours, $uptime.Minutes
             Write-Host ""
             Write-Host "  [ON]  $ScriptName  运行中" -ForegroundColor Green
-            Write-Host "     快捷键  $hk" -ForegroundColor Cyan
-            Write-Host "     PID     $($process.ProcessId)" -ForegroundColor DarkGray
-            Write-Host "     运行    $uptimeStr" -ForegroundColor DarkGray
+            Write-Host "       快捷键  $hk" -ForegroundColor Cyan
+            Write-Host "       PID     $($process.ProcessId)" -ForegroundColor DarkGray
+            Write-Host "       运行    $uptimeStr" -ForegroundColor DarkGray
             Write-Host ""
-            Write-Status "screen-switch off     关闭" -Color DarkGray
-            Write-Status "screen-switch toggle  切换" -Color DarkGray
-            Write-Status "screen-switch config  编辑配置" -Color DarkGray
+            Write-Status "cursor_sw off     关闭" -Color DarkGray
+            Write-Status "cursor_sw toggle  切换" -Color DarkGray
+            Write-Status "cursor_sw config  编辑配置" -Color DarkGray
         } else {
             Write-Host ""
             Write-Host "  [OFF]  $ScriptName  未运行" -ForegroundColor Yellow
             Write-Host ""
-            Write-Status "screen-switch on   启动" -Color DarkGray
-            Write-Status "screen-switch config  编辑配置" -Color DarkGray
+            Write-Status "cursor_sw on   启动" -Color DarkGray
+            Write-Status "cursor_sw config  编辑配置" -Color DarkGray
         }
         Write-Host ""
     }
