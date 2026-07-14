@@ -1,0 +1,6 @@
+# IDE / OS 杂项
+.DS_Store
+Thumbs.db
+
+# 日志文件（如果后续扩展带日志）
+*.log
