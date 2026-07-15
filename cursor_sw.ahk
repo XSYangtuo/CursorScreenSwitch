@@ -30,6 +30,11 @@ if (showIcon = "0") {
     TraySetIcon()
 }
 
+; 显示调试信息
+showDebugTip := IniRead(configFile, "General", "show_debug_tip", "0")
+; 切屏聚焦
+focusOnSwitch := IniRead(configFile, "General", "focus_on_switch", "1")
+
 ; ---- 注册快捷键 ----
 Hotkey switchHotkey, SwitchScreen
 
@@ -102,9 +107,23 @@ SwitchScreen(*) {
     ; ---- 移动光标 ----
     DllCall("SetCursorPos", "int", targetX, "int", targetY)
 
+    ; ---- 激活目标屏幕中心处的窗口 ----
+    if (focusOnSwitch = "1") {
+        hwnd := DllCall("WindowFromPoint", "int", targetX, "int", targetY)
+        rootHwnd := DllCall("GetAncestor", "ptr", hwnd, "uint", 2)  ; GA_ROOT = 2
+        class := WinGetClass("ahk_id " rootHwnd)
+        if !(class ~= "^(Progman|WorkerW|Shell_TrayWnd|Shell_SecondaryTrayWnd)$") {
+            if (WinGetMinMax("ahk_id " rootHwnd) = -1)
+                WinRestore "ahk_id " rootHwnd
+            WinActivate "ahk_id " rootHwnd
+        }
+    }
+
     ; ---- 调试信息 1.5 秒 ----
-    ToolTip "CursorScreenSwitch`n→ 屏幕 #" nextMonIdx " ( " targetX ", " targetY " )`n  边界 [" target.l ", " target.t " ~ " target.r ", " target.b "]"
-    SetTimer () => ToolTip(), -1500
+    if (showDebugTip = "1") {
+        ToolTip "CursorScreenSwitch`n→ 屏幕 #" nextMonIdx " ( " targetX ", " targetY " )`n  边界 [" target.l ", " target.t " ~ " target.r ", " target.b "]"
+        SetTimer () => ToolTip(), -1500
+    }
 }
 
 Persistent

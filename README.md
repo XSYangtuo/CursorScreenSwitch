@@ -17,8 +17,8 @@
 
 ```bash
 # 克隆到本地
-git clone https://github.com/你的用户名/CursorScreenControl.git
-cd CursorScreenControl
+git clone https://github.com/XSYangtuo/CursorScreenSwitch.git
+cd CursorScreenSwitch
 
 # 启动（CLI 方式，推荐）
 .\cursor_sw.cmd on
@@ -84,6 +84,10 @@ switch_screen=^!`
 [General]
 ; 托盘图标：1 = 显示，0 = 隐藏
 show_tray_icon=1
+; 切屏后是否显示屏幕参数调试信息：1 = 显示，0 = 隐藏
+show_debug_tip=0
+; 切屏后是否自动聚焦目标屏幕上的窗口：1 = 是，0 = 否
+focus_on_switch=1
 ```
 
 #### 常见快捷键示例
@@ -119,7 +123,7 @@ order=
 ## 项目结构
 
 ```
-CursorScreenControl/
+CursorScreenSwitch/
 ├── cursor_sw.cmd      # CLI 入口（cmd 包装器，推荐）
 ├── cursor_sw.ps1      # CLI 入口（PowerShell 实现）
 ├── cursor_sw.ahk      # 核心 AHK 脚本（快捷键监听）
@@ -138,6 +142,7 @@ CursorScreenControl/
 4. 遍历顺序列表，找到光标所在的屏幕索引
 5. 计算顺序列表中下一块屏幕的矩形中心 `(Left+Right)//2, (Top+Bottom)//2`
 6. 使用 Windows API `SetCursorPos` 移动到目标位置
+7. 通过 `WindowFromPoint` + `GetAncestor` 找到该位置最上层的用户窗口，`WinActivate` 激活（可通过 config 关闭）
 
 ## 兼容性
 
